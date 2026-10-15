@@ -1,0 +1,35 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: carebridge-backend
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/carebridge_db}
+      auto-index-creation: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION:86400000}
+  cors:
+    allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://localhost:80}
+  ai:
+    api-key: ${AI_PROVIDER_API_KEY:}
+    model: ${AI_PROVIDER_MODEL:gpt-4o-mini}
+    enabled: ${AI_ENABLED:false}
+  seed:
+    enabled: ${SEED_DATA_ENABLED:false}
+
+logging:
+  level:
+    com.carebridge: DEBUG
+    org.springframework.security: INFO
+    org.springframework.data.mongodb: INFO

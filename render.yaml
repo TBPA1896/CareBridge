@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: carebridge-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        fromService:
+          type: web
+          name: carebridge-web
+          property: host
+      - key: SEED_DATA_ENABLED
+        value: "false"
+      - key: AI_ENABLED
+        value: "false"
+
+  - type: web
+    name: carebridge-web
+    runtime: static
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_HOST
+        fromService:
+          type: web
+          name: carebridge-api
+          property: host
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

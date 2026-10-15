@@ -1,0 +1,13 @@
+# Local MongoDB data and logs
+/mongo-data/
+/mongo.log
+
+# Build outputs and installed dependencies
+/backend/target/
+/frontend/node_modules/
+/frontend/dist/
+
+# Local environment files
+.env
+.env.*
+!.env.example

@@ -1,0 +1,10 @@
+package com.carebridge.model;
+
+public enum AlertType {
+    LATE_MEDICATION,
+    MISSED_MEDICATION,
+    REPEATED_DEVIATION,
+    PATIENT_CONCERN,
+    MISSED_APPOINTMENT,
+    CRITICAL_WARNING_SIGN
+}
