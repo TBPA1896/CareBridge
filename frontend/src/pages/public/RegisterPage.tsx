@@ -56,7 +56,12 @@ export const RegisterPage: React.FC = () => {
       if (role === 'PATIENT') navigate('/patient/dashboard');
       else navigate('/caregiver/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please check your information.');
+      setError(
+        err.response?.data?.message ||
+          (err.response
+            ? `Registration failed (HTTP ${err.response.status}). Please try again.`
+            : 'Could not reach the registration service. Check your connection and try again.')
+      );
     } finally {
       setIsSubmitting(false);
     }
