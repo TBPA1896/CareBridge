@@ -26,10 +26,7 @@ services:
     staticPublishPath: ./frontend/dist
     envVars:
       - key: VITE_API_HOST
-        fromService:
-          type: web
-          name: carebridge-api
-          property: host
+        value: carebridge-api-ex78.onrender.com
     routes:
       - type: rewrite
         source: /*
