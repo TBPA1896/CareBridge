@@ -23,6 +23,7 @@ public class WebCorsConfig {
         List<String> origins = Arrays.stream(allowedOrigins.split(","))
                 .map(String::trim)
                 .map(origin -> origin.contains("://") ? origin : "https://" + origin)
+                .map(origin -> origin.replaceAll("/+$", ""))
                 .collect(Collectors.toList());
         configuration.setAllowedOrigins(origins);
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));

@@ -13,10 +13,7 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_ORIGIN
-        fromService:
-          type: web
-          name: carebridge-web
-          property: host
+        value: https://carebridge-web-q2lp.onrender.com
       - key: SEED_DATA_ENABLED
         value: "false"
       - key: AI_ENABLED
