@@ -1,0 +1,19 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/carebridge_local_demo}
+      database: ${MONGODB_DATABASE:carebridge_local_demo}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:carebridge-local-demo-signing-key-not-for-production-2026}
+  cors:
+    allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174}
+  seed:
+    enabled: ${SEED_DATA_ENABLED:true}
+
+SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:CareBridgeDemo!2026}
+SEED_CLINICIAN_PASSWORD: ${SEED_CLINICIAN_PASSWORD:CareBridgeDemo!2026}
+SEED_CLINIC_PASSWORD: ${SEED_CLINIC_PASSWORD:CareBridgeDemo!2026}
+SEED_PATIENT_PASSWORD: ${SEED_PATIENT_PASSWORD:CareBridgeDemo!2026}
+SEED_CAREGIVER_PASSWORD: ${SEED_CAREGIVER_PASSWORD:CareBridgeDemo!2026}

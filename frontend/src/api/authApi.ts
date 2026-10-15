@@ -7,6 +7,11 @@ export const authApi = {
     return res.data;
   },
 
+  demoClinicianLogin: async (): Promise<AuthResponse> => {
+    const res = await api.post<AuthResponse>('/auth/demo/clinician');
+    return res.data;
+  },
+
   register: async (userData: any): Promise<AuthResponse> => {
     const res = await api.post<AuthResponse>('/auth/register', userData);
     return res.data;

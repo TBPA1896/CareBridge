@@ -16,6 +16,7 @@ import com.carebridge.security.JwtTokenProvider;
 import com.carebridge.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final AuditLogService auditLogService;
+
+    @Value("${app.seed.enabled:false}")
+    private boolean seedEnabled;
 
     public AuthResponse register(RegisterRequest request) {
         String email = request.getEmail().toLowerCase().trim();
@@ -131,6 +135,26 @@ public class AuthService {
         auditLogService.logAction(user.getId(), user.getEmail(), user.getRole().name(),
                 "LOGIN", "User", user.getId(), "User logged in successfully");
 
+        return createAuthResponse(user);
+    }
+
+    public AuthResponse demoClinicianLogin() {
+        if (!seedEnabled) {
+            throw new UnauthorizedException("Local demo sign-in is not enabled.");
+        }
+
+        User clinician = userRepository.findByEmail("dr.sharma@carebridge.health")
+                .filter(user -> user.getRole() == Role.CLINICIAN)
+                .filter(user -> user.getStatus() == UserStatus.ACTIVE)
+                .orElseThrow(() -> new UnauthorizedException("The local demo clinician account is unavailable."));
+
+        auditLogService.logAction(clinician.getId(), clinician.getEmail(), clinician.getRole().name(),
+                "DEMO_LOGIN", "User", clinician.getId(), "Local clinician demo sign-in");
+
+        return createAuthResponse(clinician);
+    }
+
+    private AuthResponse createAuthResponse(User user) {
         String token = tokenProvider.generateTokenFromUser(
                 user.getId(), user.getEmail(), user.getFullName(), user.getRole().name()
         );

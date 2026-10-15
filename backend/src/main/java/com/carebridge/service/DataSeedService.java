@@ -44,6 +44,9 @@ public class DataSeedService implements CommandLineRunner {
     @Value("${SEED_CLINICIAN_PASSWORD:}")
     private String clinicianPassword;
 
+    @Value("${SEED_CLINIC_PASSWORD:}")
+    private String clinicPassword;
+
     @Value("${SEED_PATIENT_PASSWORD:}")
     private String patientPassword;
 
@@ -62,11 +65,12 @@ public class DataSeedService implements CommandLineRunner {
             return;
         }
 
-        if (adminPassword.isBlank() || clinicianPassword.isBlank()
+        if (adminPassword.isBlank() || clinicianPassword.isBlank() || clinicPassword.isBlank()
                 || patientPassword.isBlank() || caregiverPassword.isBlank()) {
             throw new IllegalStateException(
                     "Set SEED_ADMIN_PASSWORD, SEED_CLINICIAN_PASSWORD, "
-                            + "SEED_PATIENT_PASSWORD, and SEED_CAREGIVER_PASSWORD to enable seed data.");
+                            + "SEED_CLINIC_PASSWORD, SEED_PATIENT_PASSWORD, and "
+                            + "SEED_CAREGIVER_PASSWORD to enable seed data.");
         }
 
         log.info("=================================================================");
@@ -94,6 +98,16 @@ public class DataSeedService implements CommandLineRunner {
                 .status(UserStatus.ACTIVE)
                 .build();
         doctor = userRepository.save(doctor);
+
+        User clinic = User.builder()
+                .email("clinic@carebridge.health")
+                .password(passwordEncoder.encode(clinicPassword))
+                .fullName("CareBridge Demo Clinic")
+                .role(Role.CLINICIAN)
+                .phone("+91-9876543214")
+                .status(UserStatus.ACTIVE)
+                .build();
+        userRepository.save(clinic);
 
         // 3. Seed Patient
         User patient = User.builder()

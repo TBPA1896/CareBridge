@@ -8,7 +8,7 @@ export const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const { login, loginAsDemoClinician } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -24,6 +24,20 @@ export const LoginPage: React.FC = () => {
       navigateAfterLogin();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      await loginAsDemoClinician();
+      navigateAfterLogin();
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Local demo sign-in is unavailable. Start the backend with the local profile.');
     } finally {
       setIsSubmitting(false);
     }
@@ -122,6 +136,22 @@ export const LoginPage: React.FC = () => {
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
+
+          {import.meta.env.DEV && (
+            <div className="border-t border-slate-100 pt-5">
+              <button
+                type="button"
+                onClick={handleDemoLogin}
+                disabled={isSubmitting}
+                className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-100 transition disabled:opacity-50"
+              >
+                {isSubmitting ? 'Opening demo...' : 'Doctor / Clinic Demo'}
+              </button>
+              <p className="mt-2 text-center text-xs text-slate-500">
+                Local demonstration only. Doctor and clinic access share the clinician role.
+              </p>
+            </div>
+          )}
 
           <div className="text-center text-xs text-slate-500 pt-2">
             Don't have an account?{' '}

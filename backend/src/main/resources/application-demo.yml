@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: ${MONGODB_DATABASE:carebridge_demo}
+
+app:
+  cors:
+    allowed-origins: ${FRONTEND_ORIGIN}
+  seed:
+    enabled: true

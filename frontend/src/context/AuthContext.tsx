@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, Role } from '../types/auth';
+import { AuthResponse, User, Role } from '../types/auth';
 import { authApi } from '../api/authApi';
 
 interface AuthContextType {
@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  loginAsDemoClinician: () => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -22,6 +23,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
   const [token, setToken] = useState<string | null>(() => localStorage.getItem('carebridge_token'));
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const storeSession = (res: AuthResponse) => {
+    const loggedUser: User = {
+      id: res.userId,
+      email: res.email,
+      fullName: res.fullName,
+      role: res.role,
+      status: res.status,
+    };
+    setToken(res.token);
+    setUser(loggedUser);
+    localStorage.setItem('carebridge_token', res.token);
+    localStorage.setItem('carebridge_user', JSON.stringify(loggedUser));
+  };
 
   useEffect(() => {
     const initAuth = async () => {
@@ -55,17 +70,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setIsLoading(true);
     try {
       const res = await authApi.login({ email, password });
-      const loggedUser: User = {
-        id: res.userId,
-        email: res.email,
-        fullName: res.fullName,
-        role: res.role,
-        status: res.status,
-      };
-      setToken(res.token);
-      setUser(loggedUser);
-      localStorage.setItem('carebridge_token', res.token);
-      localStorage.setItem('carebridge_user', JSON.stringify(loggedUser));
+      storeSession(res);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginAsDemoClinician = async () => {
+    setIsLoading(true);
+    try {
+      const res = await authApi.demoClinicianLogin();
+      storeSession(res);
     } finally {
       setIsLoading(false);
     }
@@ -126,6 +141,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         isAuthenticated: !!token && !!user,
         isLoading,
         login,
+        loginAsDemoClinician,
         register,
         logout,
         refreshUser,
