@@ -9,6 +9,7 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI:mongodb://localhost:27017/carebridge_db}
+      database: ${MONGODB_DATABASE:carebridge_db}
       auto-index-creation: true
   servlet:
     multipart:
